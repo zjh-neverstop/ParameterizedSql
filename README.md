@@ -42,5 +42,28 @@ foreach (var sqlParam in paramList)
     sqlParams[sqlParam.Name].Value = sqlParam.Value;
 }
 ```
+而在控制层就可以避免与SqlCommand这类操作数据库的类打交道，写法如下：
+```c#
+//定义参数化sql语句
+string sqlstr = "select * from yourTable where yourFiled1=@fieldValue1 and yourField2=@fieldValue2";
+
+List<CustomSqlParam> sqlParamList = new List<CustomSqlParam>();
+
+//封装参数
+sqlParamList.Add(new CustomSqlParam
+{
+    Name = "@fieldValue1",
+    Type = SqlDbType.NVarChar,
+    Value = "theFieldValue"
+});
+sqlParamList.Add(new CustomSqlParam
+{
+    Name = "@fieldValue2",
+    Type = SqlDbType.Int,
+    Value = 0
+});
+
+DataSet ds = CommonBll.GetDataByParameterizedSql(sqlParamList, sqlParamList);
+```
 通过这种写法可以隔离控制层与数据层
 这个示例只是做个演示，有些dll没有引用，无法运行
